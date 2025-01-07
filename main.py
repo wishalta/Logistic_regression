@@ -22,7 +22,7 @@ test1.dropna(subset=['RainToday', 'RainTomorrow'], inplace=True) #<----#Good ide
 # file_open().info(max_cols=len(file_open())) #/Comparing data\
 # test1.info(max_cols=len(test1))             #\Comparing data/
 
-'''Exploratory Data Analysis and Visualization'''
+                        '''Exploratory Data Analysis and Visualization'''
 
 
 import plotly.express as px           # plotly excels at interactive plots, while matplotlib and seaborn are ideal for static plots.
@@ -58,3 +58,29 @@ magic3 = px.scatter(test1.sample(2000),
            y='Humidity3pm',
            color='RainTomorrow')
 # magic3.show()
+
+magic4 = px.scatter_matrix(test1, height=2000, color='RainTomorrow', opacity=0.1).update_traces(marker=dict(size=1))
+# magic4.show()
+
+                                '''(Optional) Working with a Sample'''
+
+USE_SAMPLE = True      # <---- A subset of the data will be selected. If False it uses full dataset
+sample_fraction = 0.1  # <---- The fraction of the data to sample (in this case, 10%).
+if USE_SAMPLE:
+    sampled_raw_df = test1.sample(frac=0.1).copy()   # <---- Makes copy
+    print(sampled_raw_df)
+
+                                '''Training, Validation and Test Sets'''
+
+# 1.Training set - used to train the model, i.e., compute the loss and adjust the model's weights using an optimization technique.
+#
+# 2.Validation set - used to evaluate the model during training, tune model hyperparameters (optimization technique, regularization etc.),
+# and pick the best version of the model. Picking a good validation set is essential for training models that generalize well. Learn more here.
+#
+# 3.Test set - used to compare different models or approaches and report the model's final accuracy. For many datasets, test sets are
+# provided separately. The test set should reflect the kind of data the model will encounter in the real-world, as closely as feasible.
+
+'''EXAMPLE IN SECOND PAGE'''
+
+plt.title('No. of Rows per Year')
+sns.countplot(x=pd.to_datetime(raw_df.Date).dt.year)
