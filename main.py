@@ -21,10 +21,15 @@ test1.dropna(subset=['RainToday', 'RainTomorrow'], inplace=True) #<----#Good ide
                                                                        #variable, and the other is likely to be very closely related to the target variable).
 # file_open().info(max_cols=len(file_open())) #/Comparing data\
 # test1.info(max_cols=len(test1))             #\Comparing data/
+'''
 
-                        '''Exploratory Data Analysis and Visualization'''
 
 
+                                 ''''''Exploratory Data Analysis and Visualization''''''
+                                 
+                                 
+                                 
+'''
 import plotly.express as px           # plotly excels at interactive plots, while matplotlib and seaborn are ideal for static plots.
 import matplotlib
 import matplotlib.pyplot as plt
@@ -62,16 +67,29 @@ magic3 = px.scatter(test1.sample(2000),
 magic4 = px.scatter_matrix(test1, height=2000, color='RainTomorrow', opacity=0.1).update_traces(marker=dict(size=1))
 # magic4.show()
 
-                                '''(Optional) Working with a Sample'''
+'''
 
+
+
+                                 ''''''(Optional) Working with a Sample''''''
+                                 
+                                 
+                                 
+'''
 USE_SAMPLE = True      # <---- A subset of the data will be selected. If False it uses full dataset
 sample_fraction = 0.1  # <---- The fraction of the data to sample (in this case, 10%).
 if USE_SAMPLE:
     sampled_raw_df = test1.sample(frac=0.1).copy()   # <---- Makes copy
     print(sampled_raw_df)
+'''
 
-                                '''Training, Validation and Test Sets'''
 
+
+                                 ''''''Training, Validation and Test Sets''''''
+                                 
+                                 
+                                 
+'''
 # 1.Training set - used to train the model, i.e., compute the loss and adjust the model's weights using an optimization technique.
 #
 # 2.Validation set - used to evaluate the model during training, tune model hyperparameters (optimization technique, regularization etc.),
@@ -83,4 +101,23 @@ if USE_SAMPLE:
 '''EXAMPLE IN SECOND PAGE'''
 
 plt.title('No. of Rows per Year')
-sns.countplot(x=pd.to_datetime(raw_df.Date).dt.year)
+sns.countplot(x=pd.to_datetime(sampled_raw_df.Date).dt.year)  # <---- x=pd.to_datetime(sampled_raw_df.Date) x kintamasis kuriam suteikiamos aplamai visos datos
+                                                                # dt.year <---- paima tik metus, taip ir sudaroma lentele is kiekvienu metu duomenu kiekio
+# plt.show()
+
+year = pd.to_datetime(sampled_raw_df.Date).dt.year # Perfect example, indexes mixed because sample took 10% of data randomly
+print(year)
+
+train_df = sampled_raw_df[year < 2015]
+val_df = sampled_raw_df[year == 2015]
+test_df = sampled_raw_df[year > 2015]
+
+# print('train_df.shape :', train_df.shape)      # /
+# print('val_df.shape :', val_df.shape)          #| <---- Shape tells how many rows and columns are in the dataset.
+# print('test_df.shape :', test_df.shape)        # \
+
+plt.title('Months Validation test')
+sns.countplot(x=pd.to_datetime(val_df.Date).dt.month)
+plt.show()
+
+'''NO TEST''' # While not a perfect 60-20-20 split, we have ensured that the test validation and test sets both contain data for all 12 months of the year.
