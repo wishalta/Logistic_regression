@@ -2,6 +2,7 @@ from pathlib import Path
 # from File_open_close import file_open_close
 import pandas as pd
 from pandas.core.interchange.dataframe_protocol import DataFrame
+import numpy as np
 
 FILES_PATH = Path("2_logistic_regression_files/")
 FILES_PATH.mkdir(parents=True, exist_ok=True)
@@ -80,7 +81,7 @@ USE_SAMPLE = True      # <---- A subset of the data will be selected. If False i
 sample_fraction = 0.1  # <---- The fraction of the data to sample (in this case, 10%).
 if USE_SAMPLE:
     sampled_raw_df = test1.sample(frac=0.1).copy()   # <---- Makes copy
-    print(sampled_raw_df)
+    # print(sampled_raw_df)
 '''
 
 
@@ -101,16 +102,16 @@ if USE_SAMPLE:
 '''EXAMPLE IN SECOND PAGE'''
 
 plt.title('No. of Rows per Year')
-sns.countplot(x=pd.to_datetime(sampled_raw_df.Date).dt.year)  # <---- x=pd.to_datetime(sampled_raw_df.Date) x kintamasis kuriam suteikiamos aplamai visos datos
+sns.countplot(x=pd.to_datetime(test1.Date).dt.year)  # <---- x=pd.to_datetime(sampled_raw_df.Date) x kintamasis kuriam suteikiamos aplamai visos datos
                                                                 # dt.year <---- paima tik metus, taip ir sudaroma lentele is kiekvienu metu duomenu kiekio
 # plt.show()
 
-year = pd.to_datetime(sampled_raw_df.Date).dt.year # Perfect example, indexes mixed because sample took 10% of data randomly
-print(year)
+year = pd.to_datetime(test1.Date).dt.year # Perfect example, indexes mixed because sample took 10% of data randomly
+# print(year)
 
-train_df = sampled_raw_df[year < 2015]
-val_df = sampled_raw_df[year == 2015]
-test_df = sampled_raw_df[year > 2015]
+train_df = test1[year < 2015]
+val_df = test1[year == 2015]
+test_df = test1[year > 2015]
 
 # print('train_df.shape :', train_df.shape)      # /
 # print('val_df.shape :', val_df.shape)          #| <---- Shape tells how many rows and columns are in the dataset.
@@ -118,6 +119,48 @@ test_df = sampled_raw_df[year > 2015]
 
 plt.title('Months Validation test')
 sns.countplot(x=pd.to_datetime(val_df.Date).dt.month)
-plt.show()
+# plt.show()
 
 '''NO TEST''' # While not a perfect 60-20-20 split, we have ensured that the test validation and test sets both contain data for all 12 months of the year.
+
+'''
+
+
+
+                                 ''''''Identifying Input and Target Columns''''''
+
+
+
+'''
+# Often, not all the columns in a dataset are useful for training a model. In the current dataset, we can ignore the Date
+# column, since we only want to weather conditions to make a prediction about whether it will rain the next day.
+input_cols = list(train_df.columns)[1:-1]  # <---- columns is an attribute of the DataFrame that returns an Index object containing the names of all the columns in the DataFrame.
+target_col = 'RainTomorrow'
+print(input_cols)
+print(target_col)
+
+X_train = train_df[input_cols].copy()
+train_targets = train_df[target_col].copy()
+
+X_val = val_df[input_cols].copy()
+y_val = val_df[target_col].copy()
+
+X_test = test_df[input_cols].copy()
+y_test = test_df[target_col].copy()
+
+# print(X_train.head())
+# print(train_targets.value_counts())
+# print(X_train.info(max_cols=X_train.shape[1]))  # <---- identify which of the columns are numerical and which ones are categorical (object, float64)
+
+
+numeric_cols = X_train.select_dtypes(include=np.number).columns.tolist()
+# The select_dtypes() function filters the DataFrame based on the data type of its columns.
+# include=np.number selects columns that have a numeric data type (e.g., integers, floats).
+# .columns:   <-----   This retrieves the names of the columns in the filtered DataFrame.
+# .tolist():  <-----   Converts the column names (a Pandas Index object) into a regular Python list.
+categorical_cols = X_train.select_dtypes('object').columns.tolist()
+# It takes object data types
+# print(numeric_cols)
+# print(categorical_cols)
+print(X_train[numeric_cols].describe()) # describe adds number after dot
+print(X_train[categorical_cols].nunique()) # The number of unique values in categorical columns
