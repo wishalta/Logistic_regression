@@ -162,5 +162,47 @@ categorical_cols = X_train.select_dtypes('object').columns.tolist()
 # It takes object data types
 # print(numeric_cols)
 # print(categorical_cols)
-print(X_train[numeric_cols].describe()) # describe adds number after dot
-print(X_train[categorical_cols].nunique()) # The number of unique values in categorical columns
+print(X_train[numeric_cols].describe()) # describe <---- adds number after dot
+# print(X_train[categorical_cols].nunique()) # The number of unique values in categorical columns
+'''
+
+
+
+                                 ''''''Imputing Missing Numeric Data''''''
+
+
+
+'''
+
+from sklearn.impute import SimpleImputer
+imputer = SimpleImputer(strategy = 'mean')
+imputer2 = SimpleImputer(strategy = 'median')
+
+# print(test1[numeric_cols].isna().sum()) # Takes all columns with numbers and counts how may NUN values are there
+
+test2 = test1#X_train[numeric_cols]
+# print(test2)
+# px.scatter( test2["Sunshine"],test2["Date"], opacity=0.2).update_traces(marker=dict(size=3))      JUST NEED TOD CHECK
+# px.scatter(test2["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))                     JUST NEED TOD CHECK
+# print(X_train[numeric_cols].isna().sum())
+
+imputer.fit(test2[numeric_cols])
+'''
+fit() is a method used to analyze the data and compute the necessary statistics needed for imputation.
+For example:
+If using SimpleImputer with strategy='mean', .fit() calculates the mean of each column.
+If using strategy='median', it computes the median for each column.
+These computed values are stored internally in the imputer object and will later be used during the transform step to replace missing values.
+'''
+print(list(imputer.statistics_))
+
+X_train[numeric_cols] = imputer.transform(X_train[numeric_cols])
+X_val[numeric_cols] = imputer.transform(X_val[numeric_cols])
+X_test[numeric_cols] = imputer.transform(X_test[numeric_cols])
+
+print(test2[numeric_cols].isna().sum())
+
+abc1 = px.scatter(test2["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))
+abc1.show()
+abc2 = px.scatter(X_train["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))
+abc2.show()
