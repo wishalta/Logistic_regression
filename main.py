@@ -162,7 +162,7 @@ categorical_cols = X_train.select_dtypes('object').columns.tolist()
 # It takes object data types
 # print(numeric_cols)
 # print(categorical_cols)
-print(X_train[numeric_cols].describe()) # describe <---- adds number after dot
+# print(X_train[numeric_cols].describe()) # describe <---- adds number after dot
 # print(X_train[categorical_cols].nunique()) # The number of unique values in categorical columns
 '''
 
@@ -217,7 +217,7 @@ X_test[numeric_cols] = imputer.transform(X_test[numeric_cols])
 
 
 '''
-print(test2[numeric_cols[:-1]].describe())
+# print(test2[numeric_cols[:-1]].describe())
 
 from sklearn.preprocessing import MinMaxScaler
 
@@ -231,11 +231,47 @@ X_train[numeric_cols] = scaler.transform(X_train[numeric_cols])       # keiciam 
 X_val[numeric_cols] = scaler.transform(X_val[numeric_cols])
 X_test[numeric_cols] = scaler.transform(X_test[numeric_cols])
 
-print(X_train[numeric_cols].describe())
+# print(X_train[numeric_cols].describe())
 
 board = px.scatter(test1[["WindSpeed9am"]])
 # board.show()
 board1 = px.scatter(X_train[["WindSpeed9am"]])
 # board1.show()
 board2 = px.scatter(X_test[["WindSpeed9am"]])
-board2.show()
+# board2.show()
+'''
+
+
+
+                                 ''''''Encoding Categorical Data''''''
+
+
+
+'''
+print(test1[categorical_cols].nunique()) # categorical_cols <--- stulpeliu pavadinimai
+
+from sklearn.preprocessing import OneHotEncoder  # tik sita funkcija sklearn, nes jai import sklearn atsisiustu per daug nereikalingo stuff
+
+# print(categorical_cols)
+#The handle_unknown='ignore' parameter in the OneHotEncoder ensures that if a category appears in the test set
+# (or any data during transformation) that was not present in the training set, it will be ignored instead of raising an error.
+encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore') # is pradziu be ignore, paziuret ar nera problemu, jei yra bet nesvarbus tai ignore
+encoder.fit(test1[categorical_cols])
+# print(encoder.categories_)
+
+
+encoded_cols = list(encoder.get_feature_names_out(categorical_cols))  #sudaro daugiau column pavadinimu, su visais miestais atskirai, kryptim ir t.t.
+# print(encoded_cols) # test1[categorical_cols].nunique() <--- is cia paima unique items
+
+X_train.loc[:, encoded_cols] = encoder.transform(X_train[categorical_cols])
+X_val.loc[:,encoded_cols] = encoder.transform(X_val[categorical_cols])
+X_test.loc[:,encoded_cols] = encoder.transform(X_test[categorical_cols])
+'''
+
+
+
+                                 ''''''Training a Logistic Regression Model''''''
+
+
+
+'''
