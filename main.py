@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 from pandas.core.interchange.dataframe_protocol import DataFrame
 import numpy as np
+from seaborn.external.husl import dot_product
 
 FILES_PATH = Path("2_logistic_regression_files/")
 FILES_PATH.mkdir(parents=True, exist_ok=True)
@@ -275,3 +276,36 @@ X_test.loc[:,encoded_cols] = encoder.transform(X_test[categorical_cols])
 
 
 '''
+from sklearn.linear_model import LogisticRegression
+
+model = LogisticRegression()
+# print(model.fit(X_train[numeric_cols], train_targets))
+print('-----------------------------')
+model = LogisticRegression(solver="liblinear")
+# print(model.fit(X_train[numeric_cols + encoded_cols], train_targets))
+print('-----------------------------')
+# print(numeric_cols + encoded_cols)
+print('-----------------------------')
+# print(model.coef_.tolist()[0])
+print('-----------------------------')
+# print(model.intercept_)
+'''
+
+
+
+                                 ''''''Making Predictions and Evaluating the Model''''''
+
+
+
+'''
+X_train = X_train[numeric_cols + encoded_cols]
+X_val = X_val[numeric_cols + encoded_cols]
+X_test = X_test[numeric_cols + encoded_cols]
+
+train_preds = model.predict(X_train) #yes and no returns
+# print(train_preds)
+
+train_probs = model.predict_proba(X_train) # % prediction
+# print(train_probs)
+
+'''To be continued...'''
