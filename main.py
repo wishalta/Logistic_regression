@@ -182,11 +182,13 @@ imputer2 = SimpleImputer(strategy = 'median')
 
 test2 = test1#X_train[numeric_cols]
 # print(test2)
-# px.scatter( test2["Sunshine"],test2["Date"], opacity=0.2).update_traces(marker=dict(size=3))      JUST NEED TOD CHECK
-# px.scatter(test2["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))                     JUST NEED TOD CHECK
+lol = px.scatter( test1["Sunshine"],test2["Date"], opacity=0.2).update_traces(marker=dict(size=3))        # Works, but meaning can't imagine
+# lol.show()
+lol1 = px.scatter( test1["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))
+# lol1.show()
 # print(X_train[numeric_cols].isna().sum())
 
-imputer.fit(test2[numeric_cols])
+imputer.fit(test1[numeric_cols])
 '''
 fit() is a method used to analyze the data and compute the necessary statistics needed for imputation.
 For example:
@@ -200,9 +202,11 @@ X_train[numeric_cols] = imputer.transform(X_train[numeric_cols])
 X_val[numeric_cols] = imputer.transform(X_val[numeric_cols])
 X_test[numeric_cols] = imputer.transform(X_test[numeric_cols])
 
-print(test2[numeric_cols].isna().sum())
+print(X_train[numeric_cols].isna().sum())
 
-abc1 = px.scatter(test2["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))
-abc1.show()
-abc2 = px.scatter(X_train["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))
-abc2.show()
+# abc1 = px.scatter(test1["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))
+# abc1.show()
+# abc2 = px.scatter(X_train["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))
+# abc2.show()
+
+# print(test2[numeric_cols[:-1]].describe())
