@@ -196,17 +196,46 @@ If using SimpleImputer with strategy='mean', .fit() calculates the mean of each 
 If using strategy='median', it computes the median for each column.
 These computed values are stored internally in the imputer object and will later be used during the transform step to replace missing values.
 '''
-print(list(imputer.statistics_))
+# print(list(imputer.statistics_))      # <---- with which numbers filled emtpy gaps
 
 X_train[numeric_cols] = imputer.transform(X_train[numeric_cols])
 X_val[numeric_cols] = imputer.transform(X_val[numeric_cols])
 X_test[numeric_cols] = imputer.transform(X_test[numeric_cols])
 
-print(X_train[numeric_cols].isna().sum())
+# print(X_train[numeric_cols].isna().sum())    # <---- shows are there empty spaces
 
 # abc1 = px.scatter(test1["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))
 # abc1.show()
 # abc2 = px.scatter(X_train["Sunshine"], opacity=0.2).update_traces(marker=dict(size=3))
 # abc2.show()
+'''
 
-# print(test2[numeric_cols[:-1]].describe())
+
+
+                                 ''''''Scaling Numeric Features''''''
+
+
+
+'''
+print(test2[numeric_cols[:-1]].describe())
+
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+scaler.fit(X_train[numeric_cols])
+
+# print(f'Minimum: {list(scaler.data_min_)}')
+# print(f'Maximum: {list(scaler.data_max_)}')
+
+X_train[numeric_cols] = scaler.transform(X_train[numeric_cols])       # keiciam skaitinius stulpelius su skaitiniais stulpeliais
+X_val[numeric_cols] = scaler.transform(X_val[numeric_cols])
+X_test[numeric_cols] = scaler.transform(X_test[numeric_cols])
+
+print(X_train[numeric_cols].describe())
+
+board = px.scatter(test1[["WindSpeed9am"]])
+# board.show()
+board1 = px.scatter(X_train[["WindSpeed9am"]])
+# board1.show()
+board2 = px.scatter(X_test[["WindSpeed9am"]])
+board2.show()
