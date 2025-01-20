@@ -302,10 +302,10 @@ X_train = X_train[numeric_cols + encoded_cols]
 X_val = X_val[numeric_cols + encoded_cols]
 X_test = X_test[numeric_cols + encoded_cols]
 
-train_preds = model.predict(X_train) #yes and no returns
+# train_preds = model.predict(X_train) #yes and no returns
 # print(train_preds)
-
-train_probs = model.predict_proba(X_train) # % prediction
+#
+# train_probs = model.predict_proba(X_train) # % prediction
 # print(train_probs)
 
 '''To be continued...'''
